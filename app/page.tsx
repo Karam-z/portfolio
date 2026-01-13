@@ -42,7 +42,7 @@ export default function Home() {
             transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", delay: 0.2 }}
             className="inline-block bg-green-500/30 px-4 py-1 rounded-full text-sm"
           >
-            Take a Peak
+            Take a Peek
           </motion.div>
 
           <motion.h1
