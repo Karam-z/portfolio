@@ -1,10 +1,12 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
+import { useState } from "react";
 import CursorGlow from "./components/CursorGlow";
 import MagneticButton from "./components/MagneticButton";
 import Particles from "./components/Particles";
 import ThemeToggle from "./components/ThemeToggle";
+import QuestionForm from "./components/QuestionForm";
 
 export default function Home() {
   return (
@@ -173,79 +175,92 @@ export default function Home() {
         ))}
       </section>
 
-      {/* Footer */}
-      <footer id="contact" className="text-[var(--muted)] text-sm text-center py-10 border-t border-[var(--border)]">
-        © 2026 Karam Zuheir • <a href="mailto:karam.zuheir2@gmail.com" className="text-[var(--accent)] hover:underline">Contact</a>
+      {/* CONTACT / QUESTIONS SECTION */}
+      <motion.section
+        id="contact"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7 }}
+        className="relative z-10 max-w-6xl mx-auto px-6 py-32 text-center"
+      >
+        <h2 className="text-5xl font-bold mb-4">Have a Question?</h2>
+        <p className="text-[var(--muted)] text-lg max-w-2xl mx-auto mb-10">
+          Curious about a project, want to collaborate, or just want to say hi? Drop your
+          question below and it’ll land straight in my inbox.
+        </p>
+        <QuestionForm />
+      </motion.section>
 
+      {/* Footer */}
+      <footer className="text-[var(--muted)] text-sm text-center py-10 border-t border-[var(--border)]">
+        © 2026 Karam Zuheir •{" "}
+        <a href="mailto:karam.zuheir2@gmail.com" className="text-[var(--accent)] hover:underline">
+          karam.zuheir2@gmail.com
+        </a>
       </footer>
     </main>
   );
 }
 
-// ================= DECK CARD (fanned like a hand of playing cards) =================
-const SUITS = ["♠", "♥", "♦", "♣", "♠", "♥"];
-const RANKS = ["A", "K", "Q", "J", "10", "9"];
-
+// ================= DECK CARD (fanned hand — draggable, hover-lift) =================
 function DeckCard({ project, index, total }: { project: Project; index: number; total: number }) {
   const center = (total - 1) / 2;
   const offset = index - center;            // symmetric around 0
 
-  const xOffset = offset * 82;              // horizontal fan spread
-  const yOffset = Math.abs(offset) * 16;    // outer cards dip lower (arc)
-  const rotation = offset * 6.5;            // fan rotation
+  const xOffset = offset * 54;              // horizontal fan spread (tightened)
+  const yOffset = Math.abs(offset) * 10;    // gentle arc dip for outer cards
+  const rotation = offset * 4.2;            // fan rotation (tightened)
 
-  const suit = SUITS[index % SUITS.length];
-  const rank = RANKS[index % RANKS.length];
-  const isRed = suit === "♥" || suit === "♦";
+  const [dragging, setDragging] = useState(false);
 
-  const corner = (
-    <div className={`leading-none ${isRed ? "text-red-500" : "text-[var(--fg)]"}`}>
-      <div className="text-lg font-bold">{rank}</div>
-      <div className="text-lg -mt-1">{suit}</div>
-    </div>
-  );
+  const goToDetails = () => {
+    const target = document.getElementById(project.id);
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
-    <motion.div
-      onClick={() => {
-        const target = document.getElementById(project.id);
-        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Outer wrapper places the card in the fan. z-index only rises while dragging,
+    // so hovering lifts a card WITHOUT covering its neighbours.
+    <div
+      className="absolute bottom-0 left-1/2"
+      style={{
+        transform: `translateX(-50%) translateX(${xOffset}px) translateY(${yOffset}px) rotate(${rotation}deg)`,
+        transformOrigin: "bottom center",
+        zIndex: dragging ? 100 : index,
       }}
-      initial={{ x: xOffset, y: yOffset + 30, rotate: rotation, opacity: 0 }}
-      whileInView={{ x: xOffset, y: yOffset, rotate: rotation, opacity: 1 }}
-      whileHover={{ y: -90, rotate: 0, scale: 1.14, zIndex: 60 }}
-      viewport={{ once: true }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      style={{ zIndex: index, transformOrigin: "bottom center" }}
-      className="group absolute bottom-0 left-1/2 -ml-[110px] cursor-pointer"
     >
-      <div className="w-[220px] h-[320px] rounded-2xl bg-[var(--card)] backdrop-blur-lg border border-[var(--border)] shadow-lg shadow-green-900/30 p-4 flex flex-col group-hover:border-green-500 group-hover:shadow-xl group-hover:shadow-green-700/40 transition-colors duration-300 overflow-hidden">
-        {/* Top-left corner index */}
-        <div className="flex items-start justify-between">
-          {corner}
-          <span className="text-[10px] uppercase tracking-widest text-[var(--muted)] mt-1">Project</span>
-        </div>
-
-        {/* Center pip / title */}
-        <div className="flex-1 flex flex-col items-center justify-center text-center px-1">
-          <div className={`text-4xl mb-2 opacity-30 group-hover:opacity-0 transition-opacity ${isRed ? "text-red-500" : "text-[var(--accent)]"}`}>{suit}</div>
+      <motion.div
+        onTap={() => { if (!dragging) goToDetails(); }}
+        drag
+        dragSnapToOrigin
+        dragMomentum={false}
+        dragElastic={0.7}
+        onDragStart={() => setDragging(true)}
+        onDragEnd={() => setDragging(false)}
+        whileHover={{ y: -46, scale: 1.04 }}
+        whileDrag={{ scale: 1.08, rotate: 0 }}
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ type: "spring", stiffness: 300, damping: 22 }}
+        className="group w-[200px] h-[290px] cursor-grab active:cursor-grabbing"
+      >
+        <div className="w-full h-full rounded-2xl bg-[var(--card)] backdrop-blur-lg border border-[var(--border)] shadow-lg shadow-green-900/30 p-5 flex flex-col group-hover:border-green-500 group-hover:shadow-xl group-hover:shadow-green-700/40 transition-colors duration-300 overflow-hidden">
           <h3 className="text-lg font-bold leading-tight">{project.title}</h3>
-          <p className="text-[var(--muted)] text-xs leading-relaxed mt-2 max-h-0 opacity-0 group-hover:max-h-40 group-hover:opacity-100 transition-all duration-300 overflow-hidden">
+
+          <p className="text-[var(--muted)] text-xs leading-relaxed mt-3 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-44 transition-all duration-300 overflow-hidden">
             {project.summary}
           </p>
-        </div>
 
-        {/* Tech tags (revealed on hover) */}
-        <div className="flex flex-wrap gap-1.5 justify-center opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-24 transition-all duration-300 overflow-hidden">
-          {project.tech.slice(0, 4).map((item) => (
-            <span key={item} className="text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-[var(--accent)] border border-[var(--border)]">{item}</span>
-          ))}
+          <div className="mt-auto flex flex-wrap gap-1.5 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-24 transition-all duration-300 overflow-hidden">
+            {project.tech.slice(0, 4).map((item) => (
+              <span key={item} className="text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-[var(--accent)] border border-[var(--border)]">{item}</span>
+            ))}
+          </div>
         </div>
-
-        {/* Bottom-right mirrored corner */}
-        <div className="flex justify-end rotate-180">{corner}</div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }
 
