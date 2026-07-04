@@ -4,23 +4,23 @@ import { motion, Variants } from "framer-motion";
 import CursorGlow from "./components/CursorGlow";
 import MagneticButton from "./components/MagneticButton";
 import Particles from "./components/Particles";
+import ThemeToggle from "./components/ThemeToggle";
 
 export default function Home() {
   return (
-    <main className="min-h-screen relative overflow-x-hidden bg-black text-white">
+    <main className="min-h-screen relative overflow-x-hidden bg-[var(--bg)] text-[var(--fg)]">
 
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-4 backdrop-blur-md bg-black/40">
+      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-4 backdrop-blur-md bg-[var(--nav)]">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-green-500/50 flex items-center justify-center text-white font-bold">KZ</div>
-          <span className="text-white font-semibold text-lg">Karam Zuheir</span>
+          <span className="font-semibold text-lg">Karam Zuheir</span>
         </div>
-        <div className="flex items-center gap-6 text-white font-medium">
-
+        <div className="flex items-center gap-6 font-medium">
           <a href="#about" className="hover:text-green-400 transition-colors">About</a>
           <a href="#projects" className="hover:text-green-400 transition-colors">Projects</a>
           <a href="#contact" className="hover:text-green-400 transition-colors">Contact</a>
-          <button className="w-8 h-8 rounded-full bg-green-500/50 flex items-center justify-center text-black">🌙</button>
+          <ThemeToggle />
         </div>
       </nav>
 
@@ -29,7 +29,7 @@ export default function Home() {
       <CursorGlow />
 
       {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-radial from-green-500/20 via-green-700/10 to-black opacity-60 animate-pulse" />
+      <div className="absolute inset-0 bg-gradient-radial from-[var(--glow)] via-green-700/10 to-[var(--bg)] opacity-60 animate-pulse" />
 
       {/* HERO SECTION */}
       <section className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20 flex flex-col md:flex-row items-center justify-between gap-12">
@@ -61,7 +61,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-green-300/80 text-xl mb-4"
+            className="text-[var(--accent)] text-xl mb-4"
           >
             Builder of Intelligent Systems • Robotics & Embedded Hardware • Real-World Projects
           </motion.p>
@@ -70,9 +70,9 @@ export default function Home() {
             initial="hidden"
             animate="visible"
             variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.15, delayChildren: 1.2 } } }}
-            className="flex justify-center md:justify-start gap-4"
+            className="flex justify-center md:justify-start gap-4 flex-wrap"
           >
-            <motion.div variants={fadeUpVariants}><MagneticButton href="/cv.pdf">Download CV</MagneticButton></motion.div>
+            <motion.div variants={fadeUpVariants}><MagneticButton href="/cv.pdf" target="_blank">Download CV</MagneticButton></motion.div>
             <motion.div variants={fadeUpVariants}><MagneticButton href="https://github.com/Karam-z" target="_blank">GitHub</MagneticButton></motion.div>
             <motion.div variants={fadeUpVariants}><MagneticButton href="https://www.linkedin.com/in/karam-zuheir-544523355/" target="_blank">LinkedIn</MagneticButton></motion.div>
           </motion.div>
@@ -103,10 +103,10 @@ export default function Home() {
         className="relative z-10 max-w-6xl mx-auto px-6 py-32"
       >
         <h2 className="text-4xl font-bold mb-6">About Me</h2>
-        <p className="text-gray-300 text-lg leading-relaxed max-w-3xl">
+        <p className="text-[var(--muted)] text-lg leading-relaxed max-w-3xl">
           I’m a Mechatronics Engineer who loves turning ideas into functioning hardware. From a 2-DOF planar manipulator I designed and controlled in MATLAB, to autonomous robots that follow light or track hands with computer vision, to a real-time ESP32 vehicle-control platform and an AI system that hears engine faults, I thrive at the intersection of mechanics, electronics, and software. My work isn’t just simulations — it’s real circuits, motors, sensors, and code that solve real problems.
         </p>
-        <ul className="mt-4 space-y-2 text-green-400 max-w-3xl">
+        <ul className="mt-4 space-y-2 text-[var(--accent)] max-w-3xl">
           <li>⚡ Designed a <b>2-DOF manipulator</b> including mechanics and control.</li>
           <li>🤖 Built a <b>light-following autonomous robot</b> using sensors and embedded logic.</li>
           <li>👋 Created a <b>real-time hand tracking system</b> with Python & computer vision.</li>
@@ -125,17 +125,17 @@ export default function Home() {
         transition={{ duration: 0.9 }}
         className="relative z-10 max-w-6xl mx-auto px-6 py-32"
       >
-        <div className="mb-16 text-center">
+        <div className="mb-10 text-center">
           <h2 className="text-5xl font-bold tracking-tight inline-block">
             <MagneticButton href="#projects">Projects</MagneticButton>
           </h2>
-          <p className="text-gray-400 mt-4">Click any card to jump to its full write-up.</p>
+          <p className="text-[var(--muted)] mt-4">Hover a card to reveal it • click to open the full write-up.</p>
         </div>
 
-        {/* Cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+        {/* Fanned deck of project cards */}
+        <div className="relative h-[520px] flex justify-center items-end select-none">
           {projects.map((p, i) => (
-            <ProjectCard key={p.id} project={p} index={i} />
+            <DeckCard key={p.id} project={p} index={i} total={projects.length} />
           ))}
         </div>
       </motion.section>
@@ -153,13 +153,13 @@ export default function Home() {
           <div
             key={p.id}
             id={p.id}
-            className="bg-black/70 border border-green-500/20 rounded-2xl p-8 shadow-2xl backdrop-blur-xl scroll-mt-24"
+            className="bg-[var(--card-solid)] border border-[var(--border)] rounded-2xl p-8 shadow-2xl backdrop-blur-xl scroll-mt-24"
           >
             <h3 className="text-3xl font-bold mb-4">{p.title}</h3>
-            <p className="text-gray-300 mb-6 whitespace-pre-line leading-relaxed">{p.description}</p>
+            <p className="text-[var(--muted)] mb-6 whitespace-pre-line leading-relaxed">{p.description}</p>
             <div className="flex flex-wrap gap-2 mb-6">
               {p.tech.map((item) => (
-                <span key={item} className="text-xs px-3 py-1 rounded-full bg-green-500/15 text-green-400 border border-green-500/20">{item}</span>
+                <span key={item} className="text-xs px-3 py-1 rounded-full bg-green-500/15 text-[var(--accent)] border border-[var(--border)]">{item}</span>
               ))}
             </div>
             <a
@@ -174,37 +174,76 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="text-gray-400 text-sm text-center py-10 border-t border-green-400/20">
-        © 2026 Karam Zuheir • <a href="mailto:karam.zuheir2@gmail.com" className="text-green-400 hover:underline">Contact</a>
+      <footer id="contact" className="text-[var(--muted)] text-sm text-center py-10 border-t border-[var(--border)]">
+        © 2026 Karam Zuheir • <a href="mailto:karam.zuheir2@gmail.com" className="text-[var(--accent)] hover:underline">Contact</a>
 
       </footer>
     </main>
   );
 }
 
-// ================= PROJECT CARD (grid) =================
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+// ================= DECK CARD (fanned like a hand of playing cards) =================
+const SUITS = ["♠", "♥", "♦", "♣", "♠", "♥"];
+const RANKS = ["A", "K", "Q", "J", "10", "9"];
+
+function DeckCard({ project, index, total }: { project: Project; index: number; total: number }) {
+  const center = (total - 1) / 2;
+  const offset = index - center;            // symmetric around 0
+
+  const xOffset = offset * 82;              // horizontal fan spread
+  const yOffset = Math.abs(offset) * 16;    // outer cards dip lower (arc)
+  const rotation = offset * 6.5;            // fan rotation
+
+  const suit = SUITS[index % SUITS.length];
+  const rank = RANKS[index % RANKS.length];
+  const isRed = suit === "♥" || suit === "♦";
+
+  const corner = (
+    <div className={`leading-none ${isRed ? "text-red-500" : "text-[var(--fg)]"}`}>
+      <div className="text-lg font-bold">{rank}</div>
+      <div className="text-lg -mt-1">{suit}</div>
+    </div>
+  );
+
   return (
     <motion.div
       onClick={() => {
         const target = document.getElementById(project.id);
         if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
       }}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -8, scale: 1.02 }}
+      initial={{ x: xOffset, y: yOffset + 30, rotate: rotation, opacity: 0 }}
+      whileInView={{ x: xOffset, y: yOffset, rotate: rotation, opacity: 1 }}
+      whileHover={{ y: -90, rotate: 0, scale: 1.14, zIndex: 60 }}
       viewport={{ once: true }}
-      transition={{ type: "spring", stiffness: 260, damping: 22, delay: index * 0.08 }}
-      className="cursor-pointer h-full rounded-2xl bg-black/40 backdrop-blur-lg border border-green-400/30 shadow-lg shadow-green-900/30 p-6 flex flex-col justify-between hover:border-green-500 hover:shadow-xl hover:shadow-green-700/30 transition-colors duration-300"
+      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      style={{ zIndex: index, transformOrigin: "bottom center" }}
+      className="group absolute bottom-0 left-1/2 -ml-[110px] cursor-pointer"
     >
-      <div>
-        <h3 className="text-xl font-bold mb-3">{project.title}</h3>
-        <p className="text-gray-300 text-sm leading-relaxed">{project.summary}</p>
-      </div>
-      <div className="flex flex-wrap gap-2 mt-5">
-        {project.tech.map((item) => (
-          <span key={item} className="text-xs px-3 py-1 rounded-full bg-green-500/15 text-green-400 border border-green-400/20">{item}</span>
-        ))}
+      <div className="w-[220px] h-[320px] rounded-2xl bg-[var(--card)] backdrop-blur-lg border border-[var(--border)] shadow-lg shadow-green-900/30 p-4 flex flex-col group-hover:border-green-500 group-hover:shadow-xl group-hover:shadow-green-700/40 transition-colors duration-300 overflow-hidden">
+        {/* Top-left corner index */}
+        <div className="flex items-start justify-between">
+          {corner}
+          <span className="text-[10px] uppercase tracking-widest text-[var(--muted)] mt-1">Project</span>
+        </div>
+
+        {/* Center pip / title */}
+        <div className="flex-1 flex flex-col items-center justify-center text-center px-1">
+          <div className={`text-4xl mb-2 opacity-30 group-hover:opacity-0 transition-opacity ${isRed ? "text-red-500" : "text-[var(--accent)]"}`}>{suit}</div>
+          <h3 className="text-lg font-bold leading-tight">{project.title}</h3>
+          <p className="text-[var(--muted)] text-xs leading-relaxed mt-2 max-h-0 opacity-0 group-hover:max-h-40 group-hover:opacity-100 transition-all duration-300 overflow-hidden">
+            {project.summary}
+          </p>
+        </div>
+
+        {/* Tech tags (revealed on hover) */}
+        <div className="flex flex-wrap gap-1.5 justify-center opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-24 transition-all duration-300 overflow-hidden">
+          {project.tech.slice(0, 4).map((item) => (
+            <span key={item} className="text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-[var(--accent)] border border-[var(--border)]">{item}</span>
+          ))}
+        </div>
+
+        {/* Bottom-right mirrored corner */}
+        <div className="flex justify-end rotate-180">{corner}</div>
       </div>
     </motion.div>
   );
