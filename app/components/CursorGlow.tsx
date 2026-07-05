@@ -23,7 +23,7 @@ export default function CursorGlow() {
     <motion.div
       style={{ x, y }}
       className="pointer-events-none fixed top-0 left-0 w-[300px] h-[300px]
-                 rounded-full bg-green-400/20 blur-3xl z-0"
+                 rounded-full bg-[#4f8cff]/20 blur-3xl z-0"
     />
   );
 }

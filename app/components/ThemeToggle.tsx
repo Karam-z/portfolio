@@ -32,7 +32,7 @@ export default function ThemeToggle() {
       onClick={toggle}
       aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
       title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      className="w-9 h-9 rounded-full bg-green-500/50 flex items-center justify-center hover:bg-green-500/70 transition-colors text-base"
+      className="w-9 h-9 rounded-full bg-[var(--accent-soft)] border border-[var(--border)] flex items-center justify-center hover:border-[var(--accent)] transition-colors text-base"
     >
       {/* Render only after mount to avoid a hydration mismatch on the icon */}
       {mounted ? (theme === "dark" ? "🌙" : "☀️") : "🌙"}

@@ -27,7 +27,7 @@ function ParticleField() {
     <Points ref={ref} positions={positions} stride={3}>
       <PointMaterial
         transparent
-        color="#22c55e"
+        color="#4f8cff"
         size={0.015}      // smaller dots
         sizeAttenuation
         depthWrite={false}

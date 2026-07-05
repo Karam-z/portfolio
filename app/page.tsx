@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { motion, Variants, useMotionValue, useVelocity, useTransform, useSpring } from "framer-motion";
 import { useState } from "react";
 import CursorGlow from "./components/CursorGlow";
 import MagneticButton from "./components/MagneticButton";
@@ -13,15 +13,18 @@ export default function Home() {
     <main className="min-h-screen relative overflow-x-hidden bg-[var(--bg)] text-[var(--fg)]">
 
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-4 backdrop-blur-md bg-[var(--nav)]">
+      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 md:px-10 py-4 backdrop-blur-md bg-[var(--nav)] border-b border-[var(--border)]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-green-500/50 flex items-center justify-center text-white font-bold">KZ</div>
+          <div className="w-9 h-9 rounded-lg bg-[var(--accent)] flex items-center justify-center text-[var(--on-accent)] font-bold text-sm">KZ</div>
           <span className="font-semibold text-lg">Karam Zuheir</span>
         </div>
-        <div className="flex items-center gap-6 font-medium">
-          <a href="#about" className="hover:text-green-400 transition-colors">About</a>
-          <a href="#projects" className="hover:text-green-400 transition-colors">Projects</a>
-          <a href="#contact" className="hover:text-green-400 transition-colors">Contact</a>
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a href="#about" className="hover:text-[var(--accent)] transition-colors">About</a>
+          <a href="#work" className="hover:text-[var(--accent)] transition-colors">Projects</a>
+          <a href="#contact" className="hover:text-[var(--accent)] transition-colors">Contact</a>
+        </div>
+        <div className="flex items-center gap-3">
+          <a href="#contact" className="hidden sm:inline-block bg-[var(--accent)] text-[var(--on-accent)] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[var(--accent-hover)] transition-colors">Let’s talk</a>
           <ThemeToggle />
         </div>
       </nav>
@@ -30,31 +33,25 @@ export default function Home() {
       <Particles />
       <CursorGlow />
 
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-radial from-[var(--glow)] via-green-700/10 to-[var(--bg)] opacity-60 animate-pulse" />
+      {/* Ambient glow */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[700px] opacity-70"
+        style={{ background: "radial-gradient(60% 60% at 50% 0%, var(--glow), transparent 70%)" }}
+      />
 
       {/* HERO SECTION */}
-      <section className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20 flex flex-col md:flex-row items-center justify-between gap-12">
-
-        {/* Left side */}
-        <div className="flex-1 text-center md:text-left space-y-6">
-          <motion.div
-            initial={{ y: -10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1, repeat: Infinity, repeatType: "reverse", delay: 0.2 }}
-            className="inline-block bg-green-500/30 px-4 py-1 rounded-full text-sm"
-          >
-            Take a Peek
-          </motion.div>
+      <section className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-24 grid md:grid-cols-2 items-center gap-12">
+        <div className="text-center md:text-left space-y-6">
+          <Eyebrow>Mechatronics Engineer</Eyebrow>
 
           <motion.h1
-            initial={{ y: 80, opacity: 0, filter: "blur(10px)" }}
+            initial={{ y: 40, opacity: 0, filter: "blur(10px)" }}
             animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-5xl md:text-6xl font-bold mb-4"
+            className="text-4xl md:text-6xl font-bold leading-tight"
           >
-            I build real-world machines and intelligent systems that{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-500">
+            I build machines and systems that{" "}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[var(--accent)] to-[var(--accent-hover)]">
               move, sense, and think.
             </span>
           </motion.h1>
@@ -62,16 +59,16 @@ export default function Home() {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-[var(--accent)] text-xl mb-4"
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="text-[var(--muted)] text-lg max-w-xl mx-auto md:mx-0"
           >
-            Builder of Intelligent Systems • Robotics & Embedded Hardware • Real-World Projects
+            From real-time embedded firmware and robotics to AI and full-stack software — I turn ideas into functioning hardware and the code that drives it.
           </motion.p>
 
           <motion.div
             initial="hidden"
             animate="visible"
-            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.15, delayChildren: 1.2 } } }}
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.15, delayChildren: 0.8 } } }}
             className="flex justify-center md:justify-start gap-4 flex-wrap"
           >
             <motion.div variants={fadeUpVariants}><MagneticButton href="/cv.pdf" target="_blank">Download CV</MagneticButton></motion.div>
@@ -80,62 +77,97 @@ export default function Home() {
           </motion.div>
         </div>
 
-        {/* Right side - decorative floating shapes */}
-        <div className="flex-1 relative w-full h-72 md:h-96">
-          <motion.div
-            className="absolute w-40 h-40 rounded-full bg-green-500/30 blur-3xl -top-10 -right-10"
-            animate={{ y: [0, 20, 0], x: [0, 10, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute w-32 h-32 rounded-full bg-green-400/20 blur-2xl bottom-0 left-10"
-            animate={{ y: [0, -15, 0], x: [0, -5, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
+        {/* Device-style preview panel */}
+        <motion.div
+          initial={{ opacity: 0, y: 30, rotateX: 8 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="relative hidden md:block"
+        >
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] backdrop-blur-xl p-4 shadow-2xl">
+            <div className="flex items-center gap-1.5 mb-4">
+              <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)]/70" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[var(--muted)]/40" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[var(--muted)]/40" />
+            </div>
+            <div
+              className="rounded-xl border border-[var(--border)] h-64 p-5 flex flex-col justify-between"
+              style={{
+                backgroundImage:
+                  "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
+                backgroundSize: "34px 34px",
+              }}
+            >
+              <div>
+                <div className="text-xs text-[var(--muted)] uppercase tracking-widest">Live telemetry</div>
+                <div className="text-2xl font-bold mt-1">20&nbsp;Hz stream</div>
+              </div>
+              <div className="grid grid-cols-3 gap-3 text-center">
+                {[["speed", "3.2 km/h"], ["accel", "1.8 m/s²"], ["steer", "12.5°"]].map(([k, v]) => (
+                  <div key={k} className="rounded-lg border border-[var(--border)] py-3">
+                    <div className="text-[10px] text-[var(--muted)] uppercase">{k}</div>
+                    <div className="text-sm font-semibold text-[var(--accent)]">{v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </section>
 
-      {/* ABOUT SECTION */}
+      {/* ABOUT + STATS (two-column, ZeBeyond-style) */}
       <motion.section
         id="about"
-        initial={{ opacity: 0, y: 40, filter: "blur(6px)" }}
-        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="relative z-10 max-w-6xl mx-auto px-6 py-32"
+        className="relative z-10 max-w-6xl mx-auto px-6 py-28 grid md:grid-cols-2 gap-12 items-center"
       >
-        <h2 className="text-4xl font-bold mb-6">About Me</h2>
-        <p className="text-[var(--muted)] text-lg leading-relaxed max-w-3xl">
-          I’m a Mechatronics Engineer who loves turning ideas into functioning hardware. From a 2-DOF planar manipulator I designed and controlled in MATLAB, to autonomous robots that follow light or track hands with computer vision, to a real-time ESP32 vehicle-control platform and an AI system that hears engine faults, I thrive at the intersection of mechanics, electronics, and software. My work isn’t just simulations — it’s real circuits, motors, sensors, and code that solve real problems.
-        </p>
-        <ul className="mt-4 space-y-2 text-[var(--accent)] max-w-3xl">
-          <li>⚡ Designed a <b>2-DOF manipulator</b> including mechanics and control.</li>
-          <li>🤖 Built a <b>light-following autonomous robot</b> using sensors and embedded logic.</li>
-          <li>👋 Created a <b>real-time hand tracking system</b> with Python & computer vision.</li>
-          <li>🚗 Engineered the <b>ESP32 firmware & telemetry</b> for a smart-car mechatronics platform.</li>
-          <li>🔊 Developed <b>SoundDrive</b>, AI engine-fault detection from audio.</li>
-          <li>🛠 Skilled in <b>MATLAB, Python, ESP32, PIC, and mechanical design</b>.</li>
-        </ul>
+        <div>
+          <Eyebrow>Why work with me</Eyebrow>
+          <h2 className="text-4xl font-bold mt-4 mb-5">
+            Engineering across the whole stack, with <span className="text-[var(--accent)]">confidence</span>.
+          </h2>
+          <p className="text-[var(--muted)] text-lg leading-relaxed mb-8">
+            I’m a Mechatronics Engineer who loves turning ideas into functioning hardware — from a 2-DOF manipulator and autonomous robots to a real-time ESP32 vehicle platform and an AI system that hears engine faults. My work isn’t just simulations; it’s real circuits, motors, sensors, and code that solve real problems.
+          </p>
+          <a href="#work" className="inline-block bg-[var(--accent)] text-[var(--on-accent)] px-6 py-3 rounded-full font-semibold hover:bg-[var(--accent-hover)] transition-colors">
+            See my work
+          </a>
+        </div>
+
+        <div className="grid grid-cols-2 rounded-2xl border border-[var(--border)] overflow-hidden bg-[var(--card)] backdrop-blur-md">
+          {STATS.map((s, i) => (
+            <div
+              key={s.label}
+              className={`p-6 ${i % 2 === 0 ? "border-r" : ""} ${i < 2 ? "border-b" : ""} border-[var(--border)]`}
+            >
+              <div className="text-2xl mb-3">{s.icon}</div>
+              <div className="text-xl font-bold">{s.value}</div>
+              <div className="text-sm text-[var(--muted)] mt-1">{s.label}</div>
+            </div>
+          ))}
+        </div>
       </motion.section>
 
       {/* PROJECTS SECTION */}
       <motion.section
-        id="projects"
+        id="work"
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.9 }}
-        className="relative z-10 max-w-6xl mx-auto px-6 py-32"
+        className="relative z-10 max-w-6xl mx-auto px-6 py-28"
       >
-        <div className="mb-10 text-center">
-          <h2 className="text-5xl font-bold tracking-tight inline-block">
-            <MagneticButton href="#projects">Projects</MagneticButton>
-          </h2>
-          <p className="text-[var(--muted)] mt-4">Hover a card to reveal it • click to open the full write-up.</p>
+        <div className="mb-8 text-center">
+          <Eyebrow center>Selected work</Eyebrow>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mt-4">Projects</h2>
+          <p className="text-[var(--muted)] mt-4">Hover a card to reveal it • drag to play with it • click to open the write-up.</p>
         </div>
 
         {/* Fanned deck of project cards */}
-        <div className="relative h-[520px] flex justify-center items-end select-none">
+        <div className="relative h-[540px] flex justify-center items-end select-none">
           {projects.map((p, i) => (
             <DeckCard key={p.id} project={p} index={i} total={projects.length} />
           ))}
@@ -145,11 +177,12 @@ export default function Home() {
       {/* ================= PROJECT DETAILS SECTION ================= */}
       <section
         id="project-details"
-        className="relative z-10 max-w-6xl mx-auto px-6 py-32 space-y-20"
+        className="relative z-10 max-w-6xl mx-auto px-6 py-24 space-y-16"
       >
-        <h2 className="text-5xl font-bold text-center mb-12">
-          Project Details
-        </h2>
+        <div className="text-center">
+          <Eyebrow center>Deep dive</Eyebrow>
+          <h2 className="text-4xl md:text-5xl font-bold mt-4">Project Details</h2>
+        </div>
 
         {projects.map((p) => (
           <div
@@ -161,13 +194,13 @@ export default function Home() {
             <p className="text-[var(--muted)] mb-6 whitespace-pre-line leading-relaxed">{p.description}</p>
             <div className="flex flex-wrap gap-2 mb-6">
               {p.tech.map((item) => (
-                <span key={item} className="text-xs px-3 py-1 rounded-full bg-green-500/15 text-[var(--accent)] border border-[var(--border)]">{item}</span>
+                <span key={item} className="text-xs px-3 py-1 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--border)]">{item}</span>
               ))}
             </div>
             <a
               href={p.github}
               target="_blank"
-              className="inline-block bg-green-500 text-black px-6 py-3 rounded-full font-semibold hover:bg-green-400 transition-colors"
+              className="inline-block bg-[var(--accent)] text-[var(--on-accent)] px-6 py-3 rounded-full font-semibold hover:bg-[var(--accent-hover)] transition-colors"
             >
               Go to GitHub
             </a>
@@ -182,12 +215,12 @@ export default function Home() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7 }}
-        className="relative z-10 max-w-6xl mx-auto px-6 py-32 text-center"
+        className="relative z-10 max-w-6xl mx-auto px-6 py-28 text-center"
       >
-        <h2 className="text-5xl font-bold mb-4">Have a Question?</h2>
+        <Eyebrow center>Get in touch</Eyebrow>
+        <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-4">Have a Question?</h2>
         <p className="text-[var(--muted)] text-lg max-w-2xl mx-auto mb-10">
-          Curious about a project, want to collaborate, or just want to say hi? Drop your
-          question below and it’ll land straight in my inbox.
+          Curious about a project, want to collaborate, or just want to say hi? Drop your question below and it’ll land straight in my inbox.
         </p>
         <QuestionForm />
       </motion.section>
@@ -203,16 +236,39 @@ export default function Home() {
   );
 }
 
-// ================= DECK CARD (fanned hand — draggable, hover-lift) =================
+// ================= EYEBROW LABEL =================
+function Eyebrow({ children, center }: { children: React.ReactNode; center?: boolean }) {
+  return (
+    <div className={`flex items-center gap-2 ${center ? "justify-center" : ""}`}>
+      <span className="h-px w-6 bg-[var(--accent)]" />
+      <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">{children}</span>
+    </div>
+  );
+}
+
+// ================= DECK CARD (fanned hand — draggable, hover-lift, swing) =================
 function DeckCard({ project, index, total }: { project: Project; index: number; total: number }) {
   const center = (total - 1) / 2;
   const offset = index - center;            // symmetric around 0
 
-  const xOffset = offset * 54;              // horizontal fan spread (tightened)
+  const xOffset = offset * 54;              // horizontal fan spread
   const yOffset = Math.abs(offset) * 10;    // gentle arc dip for outer cards
-  const rotation = offset * 4.2;            // fan rotation (tightened)
+  const rotation = offset * 4.2;            // fan rotation
 
   const [dragging, setDragging] = useState(false);
+  // Grab point (% within the card) becomes the pivot, so the card swings from
+  // wherever the mouse grabs it — the mouse is the anchor point.
+  const [origin, setOrigin] = useState("50% 50%");
+
+  // Drag position + velocity-driven rotation (pendulum swing that settles to
+  // upright, as if gravity pulls the card straight down from the anchor).
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const xVelocity = useVelocity(x);
+  const swing = useSpring(
+    useTransform(xVelocity, [-1600, 1600], [22, -22], { clamp: true }),
+    { stiffness: 200, damping: 14, mass: 0.6 }
+  );
 
   const goToDetails = () => {
     const target = document.getElementById(project.id);
@@ -220,49 +276,69 @@ function DeckCard({ project, index, total }: { project: Project; index: number; 
   };
 
   return (
-    // Outer wrapper places the card in the fan. z-index only rises while dragging,
-    // so hovering lifts a card WITHOUT covering its neighbours.
+    // Layer A — places the card in the fan. z-index only rises while dragging,
+    // so hovering lifts a card WITHOUT covering its neighbours. The fan tilt
+    // straightens while you hold the card so its own swing takes over.
     <div
       className="absolute bottom-0 left-1/2"
       style={{
-        transform: `translateX(-50%) translateX(${xOffset}px) translateY(${yOffset}px) rotate(${rotation}deg)`,
+        transform: `translateX(-50%) translateX(${xOffset}px) translateY(${yOffset}px) rotate(${dragging ? 0 : rotation}deg)`,
         transformOrigin: "bottom center",
+        transition: "transform 0.25s ease",
         zIndex: dragging ? 100 : index,
       }}
     >
+      {/* Layer B — lifts the whole card straight up on hover */}
       <motion.div
-        onTap={() => { if (!dragging) goToDetails(); }}
-        drag
-        dragSnapToOrigin
-        dragMomentum={false}
-        dragElastic={0.7}
-        onDragStart={() => setDragging(true)}
-        onDragEnd={() => setDragging(false)}
-        whileHover={{ y: -46, scale: 1.04 }}
-        whileDrag={{ scale: 1.08, rotate: 0 }}
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -140, scale: 1.05 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ type: "spring", stiffness: 300, damping: 22 }}
-        className="group w-[200px] h-[290px] cursor-grab active:cursor-grabbing"
+        transition={{ type: "spring", stiffness: 300, damping: 24 }}
       >
-        <div className="w-full h-full rounded-2xl bg-[var(--card)] backdrop-blur-lg border border-[var(--border)] shadow-lg shadow-green-900/30 p-5 flex flex-col group-hover:border-green-500 group-hover:shadow-xl group-hover:shadow-green-700/40 transition-colors duration-300 overflow-hidden">
-          <h3 className="text-lg font-bold leading-tight">{project.title}</h3>
+        {/* Layer C — drag + gravity swing, pivoting from the grab point */}
+        <motion.div
+          onTap={() => { if (!dragging) goToDetails(); }}
+          drag
+          dragSnapToOrigin
+          dragMomentum={false}
+          dragElastic={0.6}
+          onPointerDown={(e) => {
+            const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+            setOrigin(`${((e.clientX - r.left) / r.width) * 100}% ${((e.clientY - r.top) / r.height) * 100}%`);
+          }}
+          onDragStart={() => setDragging(true)}
+          onDragEnd={() => setDragging(false)}
+          whileDrag={{ scale: 1.06 }}
+          style={{ x, y, rotate: swing, transformOrigin: origin }}
+          className="group w-[200px] h-[290px] cursor-grab active:cursor-grabbing"
+        >
+          <div className="w-full h-full rounded-2xl bg-[var(--card-solid)] backdrop-blur-lg border border-[var(--border)] shadow-xl shadow-black/40 p-5 flex flex-col group-hover:border-[var(--accent)] transition-colors duration-300 overflow-hidden">
+            <h3 className="text-lg font-bold leading-tight">{project.title}</h3>
 
-          <p className="text-[var(--muted)] text-xs leading-relaxed mt-3 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-44 transition-all duration-300 overflow-hidden">
-            {project.summary}
-          </p>
+            <p className="text-[var(--muted)] text-xs leading-relaxed mt-3 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-44 transition-all duration-300 overflow-hidden">
+              {project.summary}
+            </p>
 
-          <div className="mt-auto flex flex-wrap gap-1.5 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-24 transition-all duration-300 overflow-hidden">
-            {project.tech.slice(0, 4).map((item) => (
-              <span key={item} className="text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-[var(--accent)] border border-[var(--border)]">{item}</span>
-            ))}
+            <div className="mt-auto flex flex-wrap gap-1.5 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-24 transition-all duration-300 overflow-hidden">
+              {project.tech.slice(0, 4).map((item) => (
+                <span key={item} className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--border)]">{item}</span>
+              ))}
+            </div>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   );
 }
+
+// ================= HIGHLIGHT STATS =================
+const STATS = [
+  { icon: "🧩", value: "6+ Projects", label: "Across mechatronics, AI & software." },
+  { icon: "⚡", value: "Real-time", label: "20 Hz embedded telemetry on custom hardware." },
+  { icon: "🧠", value: "92% accuracy", label: "Driver-drowsiness detection AI." },
+  { icon: "🛠️", value: "CAD → Code", label: "From SolidWorks chassis to firmware." },
+];
 
 // ================= PROJECT DATA =================
 type Project = {

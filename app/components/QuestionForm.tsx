@@ -19,7 +19,7 @@ export default function QuestionForm() {
   };
 
   const field =
-    "w-full rounded-xl bg-[var(--card)] border border-[var(--border)] px-4 py-3 text-[var(--fg)] placeholder:text-[var(--muted)] outline-none focus:border-green-500 transition-colors";
+    "w-full rounded-xl bg-[var(--card)] border border-[var(--border)] px-4 py-3 text-[var(--fg)] placeholder:text-[var(--muted)] outline-none focus:border-[var(--accent)] transition-colors";
 
   return (
     <form onSubmit={submit} className="w-full max-w-2xl mx-auto space-y-4 text-left">
@@ -48,7 +48,7 @@ export default function QuestionForm() {
       <div className="flex flex-col sm:flex-row items-center gap-4 justify-between">
         <button
           type="submit"
-          className="bg-green-500 text-black px-7 py-3 rounded-full font-semibold hover:bg-green-400 transition-colors"
+          className="bg-[var(--accent)] text-[var(--on-accent)] px-7 py-3 rounded-full font-semibold hover:bg-[var(--accent-hover)] transition-colors"
         >
           Send question
         </button>

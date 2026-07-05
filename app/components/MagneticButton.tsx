@@ -21,7 +21,7 @@ export default function MagneticButton({
       <Link
         href={href}
         target={target}
-        className="px-7 py-3 rounded-xl bg-green-500 text-black font-semibold shadow-lg shadow-green-500/30 hover:bg-green-400 transition"
+        className="px-7 py-3 rounded-xl bg-[var(--accent)] text-[var(--on-accent)] font-semibold shadow-lg hover:bg-[var(--accent-hover)] transition"
       >
         {children}
       </Link>
