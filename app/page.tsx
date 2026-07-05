@@ -7,6 +7,7 @@ import MagneticButton from "./components/MagneticButton";
 import Particles from "./components/Particles";
 import ThemeToggle from "./components/ThemeToggle";
 import QuestionForm from "./components/QuestionForm";
+import MobileNav from "./components/MobileNav";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
         <div className="flex items-center gap-3">
           <a href="#contact" className="hidden sm:inline-block bg-[var(--accent)] text-[var(--on-accent)] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[var(--accent-hover)] transition-colors">Let’s talk</a>
           <ThemeToggle />
+          <MobileNav />
         </div>
       </nav>
 
@@ -137,11 +139,11 @@ export default function Home() {
           </a>
         </div>
 
-        <div className="grid grid-cols-2 rounded-2xl border border-[var(--border)] overflow-hidden bg-[var(--card)] backdrop-blur-md">
+        <div className="grid grid-cols-1 sm:grid-cols-2 rounded-2xl border border-[var(--border)] overflow-hidden bg-[var(--card)] backdrop-blur-md">
           {STATS.map((s, i) => (
             <div
               key={s.label}
-              className={`p-6 ${i % 2 === 0 ? "border-r" : ""} ${i < 2 ? "border-b" : ""} border-[var(--border)]`}
+              className={`p-6 border-[var(--border)] ${i < STATS.length - 1 ? "border-b" : ""} ${i % 2 === 0 ? "sm:border-r" : ""} ${i >= 2 ? "sm:border-b-0" : ""}`}
             >
               <div className="text-2xl mb-3">{s.icon}</div>
               <div className="text-xl font-bold">{s.value}</div>
@@ -163,13 +165,33 @@ export default function Home() {
         <div className="mb-8 text-center">
           <Eyebrow center>Selected work</Eyebrow>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight mt-4">Projects</h2>
-          <p className="text-[var(--muted)] mt-4">Hover a card to reveal it • drag to play with it • click to open the write-up.</p>
+          <p className="text-[var(--muted)] mt-4 hidden md:block">Hover a card to reveal it • drag to play with it • click to open the write-up.</p>
+          <p className="text-[var(--muted)] mt-4 md:hidden">Tap a project to open the full write-up.</p>
         </div>
 
-        {/* Fanned deck of project cards */}
-        <div className="relative h-[540px] flex justify-center items-end select-none">
+        {/* Desktop: fanned deck of project cards */}
+        <div className="hidden md:flex relative h-[540px] justify-center items-end select-none">
           {projects.map((p, i) => (
             <DeckCard key={p.id} project={p} index={i} total={projects.length} />
+          ))}
+        </div>
+
+        {/* Mobile: simple stacked cards (no fan/drag — better for touch) */}
+        <div className="md:hidden grid grid-cols-1 gap-4">
+          {projects.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => document.getElementById(p.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
+              className="text-left rounded-2xl bg-[var(--card-solid)] border border-[var(--border)] p-5 active:border-[var(--accent)] transition-colors"
+            >
+              <h3 className="text-lg font-bold">{p.title}</h3>
+              <p className="text-[var(--muted)] text-sm mt-2 leading-relaxed">{p.summary}</p>
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {p.tech.slice(0, 4).map((item) => (
+                  <span key={item} className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--border)]">{item}</span>
+                ))}
+              </div>
+            </button>
           ))}
         </div>
       </motion.section>
