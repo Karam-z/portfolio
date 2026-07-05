@@ -336,7 +336,7 @@ function DeckCard({ project, index, total }: { project: Project; index: number; 
 const STATS = [
   { icon: "🧩", value: "6+ Projects", label: "Across mechatronics, AI & software." },
   { icon: "⚡", value: "Real-time", label: "20 Hz embedded telemetry on custom hardware." },
-  { icon: "🧠", value: "92% accuracy", label: "Driver-drowsiness detection AI." },
+  { icon: "🤖", value: "Autonomous", label: "Light-following robot & hand-tracked control." },
   { icon: "🛠️", value: "CAD → Code", label: "From SolidWorks chassis to firmware." },
 ];
 
